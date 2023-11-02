@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Audio Sampler</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+      <div class="controls">
+        <button class="play">CHWARAE</button>
+        <button class="stop">STOPIO</button>      
+        <div class="tempo">
+          <p>CYFLYMDER <span class="tempo-val">120</span></p>
+          <input
+            type="range"
+            class="tempo-slider"
+            min="40"
+            max="300"
+            value="120"
+          />
+        </div>
+      </div>
+      <div id="audio-display">
+
+    <div id="audio-range-sliders">
+      <input type="range" id="start-time-slider" min="0" max="100" step="0.1" value="0">
+      <input type="range" id="end-time-slider" min="0" max="100" step="0.1" value="100">
+    </div>
+    <div id="canvas-elements" class="canvas-container">
+      <canvas id="waveform-canvas"></canvas>
+      <div id="left-overlay"></div>
+      <div id="right-overlay"></div>
+    </div>
+      </div>
+      <div id="audio-controls">
+        <label for="gain-slider">Lefel:</label>
+        <input id="gain-slider" type="range" id="pad-volume" min="0" max="1" step="0.01" value="1">
+        <button id="toggle-delay-effects"> Atsain </button>
+        <input id="delay-send-slider" type="range" id="pad-volume" min="0" max="1" step="0.01" value="0">
+      </div>
+      <div id="delay-effect-controls" class="delay-controls">
+
+  <div class="control-group">
+    <label for="delayTime">Amser: <span id="delayTimeValue"></span></label>
+    <input type="range" id="delayTime" min="0" max="1" step="0.01" value="0.5">
+  </div>
+
+  <div class="control-group">
+    <label for="feedback">Feedback?: <span id="feedbackValue"></span></label>
+    <input type="range" id="feedback" min="0" max="1" step="0.01" value="0.5">
+  </div>
+
+  <div class="control-group">
+    <label for="filterFrequency">Tôn: <span id="filterFrequencyValue"></span></label>
+    <input type="range" id="filterFrequency" min="2.5" max="4" step="0.01" value="3">
+  </div>
+
+  <div class="control-group">
+    <label for="filterType">Filter Type:</label>
+    <select id="filterType">
+      <option value="lowpass">Lowpass</option>
+      <option value="highpass">Highpass</option>
+      <option value="bandpass">Bandpass</option>
+      <option value="notch">Notch</option>
+      <option value="allpass">Allpass</option>
+    </select>
+  </div>
+      </div>
+    <div class="grid-container"></div>
+    <div class="sequencer">
+  
+  <div class="patterns"></div>
+  
+</div>
+<script src="audioEffects.js" type="module"></script>
+<script src="script.js" type="module"></script>
+
+  </body>
+</html>

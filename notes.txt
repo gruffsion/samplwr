@@ -1,0 +1,7 @@
+add colour to selected pad
+make waveform change with volume
+improve sequencer colour clarity
+improve filter value input
+improve behaviour of start and end sample sliders
+add swing
+make code to handle classes more efficient
