@@ -71,35 +71,33 @@ class AudioManager {
       startTime: 0,
       endTime: 0 // Set the endTime to 0 initially
     };
-
+  
     try {
       const audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(audioStream);
-
-      mediaRecorder.ondataavailable = event => padObject.chunks.push(event.data);
-
-      mediaRecorder.onstop = async () => {
+      padObject.mediaRecorder = new MediaRecorder(audioStream);
+  
+      padObject.mediaRecorder.ondataavailable = event => padObject.chunks.push(event.data);
+  
+      padObject.mediaRecorder.onstop = async () => {
         const blob = new Blob(padObject.chunks, { type: "audio/webm" });
         const audioURL = URL.createObjectURL(blob);
         const audio = new Audio(audioURL);
         audio.preload = "auto";
-        console.log(padObject.mediaRecorder.state);
-
+        console.log(padObject.mediaRecorder.state); // This log is correct now
+  
         audio.onerror = function() {
           console.error("Audio error:", audio.error);
         };
-
+  
         audio.onloadedmetadata = async function() {
           audio.currentTime = Number.MAX_SAFE_INTEGER;
           audio.ontimeupdate = async () => {
             audio.ontimeupdate = null; // Cleanup the event listener
             audio.currentTime = 0;
-
+  
             if (audio.readyState >= audio.HAVE_METADATA) {
               if (isFinite(audio.duration)) {
                 padObject.endTime = audio.duration;
-
-                // Move the await inside this block
                 await this.processAudioData(padObject, blob);
               } else {
                 console.log("duration is not finite");
@@ -107,19 +105,20 @@ class AudioManager {
             }
           };
         }.bind(this);
-
+  
         padObject.audioElement = audio;
       };
-
-      padObject.mediaRecorder = mediaRecorder;
-      mediaRecorder.start();
+  
+      // Start recording
+      padObject.mediaRecorder.start();
     } catch (error) {
-      console.error(`Error starting recording for ${padId}:`, error);
+      console.error(`Error starting recording for pad-${padId}:`, error);
     }
-
+  
     this.padObjects.push(padObject);
     return padObject;
   }
+  
 
   playAudio(padId) {
     const padObject = this.getPadObject(padId);
@@ -297,7 +296,7 @@ async function toggleRecording(padId) {
       // Stop the current recording
       padObject.mediaRecorder.stop();
       padObject.mediaRecorder.stream.getTracks().forEach(track => track.stop());
-      recordButton.innerText = "Recordio";
+      // recordButton.innerText = "Recordio";
       recordButton.classList.remove('recording');
       playButton.classList.remove('recording');
       playButton.classList.add('selected-pad');
@@ -310,7 +309,7 @@ async function toggleRecording(padId) {
         playButton.classList.add('recording');
           const newPadObject = await audioManager.recordAudio(padId);
           audioManager.padObjects.push(newPadObject);
-          recordButton.innerText = "Stopio";
+          // recordButton.innerText = "Stopio";
 
           
       } catch (error) {
@@ -376,7 +375,7 @@ function createPad(padId, gridContainer) {
   recordButton.classList.add("record-button");
   deleteButton.classList.add("delete-button");
 
-  recordButton.innerText = "Recordio";
+  // recordButton.innerText = "Recordio";
   deleteButton.innerText = "X";
 
   gridItem.appendChild(playButton);
@@ -530,7 +529,7 @@ function updateVisualsAfterRecording(padId) {
   const recordButton = document.getElementById(`${padId}-record-button`);
   const playButton = document.getElementById(`${padId}-play-button`);
   if (recordButton) {
-    recordButton.innerText = "Recordio";
+    // recordButton.innerText = "Recordio";
     recordButton.classList.remove('recording');
     playButton.classList.add('recorded');
   }
@@ -575,6 +574,7 @@ function createSequencerForPad(pad) {
   // Create and append the <h1> with pad name
   const padNameElement = document.createElement('span');
   padNameElement.textContent = `Pad ${sequencerRowNumber}`;
+  padNameElement.classList.add('hidden');
   sequencerRowNumber++;
   sequencerContainer.appendChild(padNameElement);
 
